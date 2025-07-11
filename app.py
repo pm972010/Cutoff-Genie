@@ -21,7 +21,7 @@ if uploaded_file and st.button("🚀 Execute"):
         df.iloc[:, 0] = pd.to_datetime(df.iloc[:, 0].astype(str) + ' ' + df.iloc[:, 4].astype(str))
         df.drop(df.columns[4], axis=1, inplace=True)
         max_data_date = df.iloc[:, 0].max().date()
-        end_date = min(end_date_input, max_data_date)
+        end_date = min(end_date, max_data_date)
 
         # Step 3: Filter valid dates — only process dates where data exists
         valid_dates = []
