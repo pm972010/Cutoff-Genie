@@ -20,12 +20,12 @@ if uploaded_file and st.button("🚀 Execute"):
         df.iloc[:, 0] = df.iloc[:, 0].ffill()
         df.iloc[:, 0] = pd.to_datetime(df.iloc[:, 0].astype(str) + ' ' + df.iloc[:, 4].astype(str))
         df.drop(df.columns[4], axis=1, inplace=True)
-        max_data_date = df.iloc[:, 0].max().datetime.date()
-        end_date = min(end_date.datetime.date(), max_data_date)
+        max_data_date = df.iloc[:, 0].max().date()
+        end_date = min(end_date.date(), max_data_date)
 
         # Step 3: Filter valid dates — only process dates where data exists
         valid_dates = []
-        for single_date in [start_date + timedelta(days=x) for x in range((end_date - start_date.datetime.date()).days + 1)]:
+        for single_date in [start_date + timedelta(days=x) for x in range((end_date - start_date.date()).days + 1)]:
             target_datetime = datetime.combine(single_date, datetime.min.time())
 
             # Only add if any data exists on or before that datetime
@@ -38,7 +38,7 @@ if uploaded_file and st.button("🚀 Execute"):
 
         # Step 5: Iterate through valid dates and groups
         for single_date in valid_dates:
-            target_datetime = datetime.combine(single_date.datetime.date(), datetime.min.time())
+            target_datetime = datetime.combine(single_date.date(), datetime.min.time())
 
             for group_val, group_df in df.groupby(group_col):
                 group_df = group_df.sort_values(by=df.columns[0])
