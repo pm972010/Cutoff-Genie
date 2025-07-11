@@ -9,8 +9,8 @@ st.title("📊 CUTOFF GENIE")
 uploaded_file = st.file_uploader("Upload Excel File (.xlsx)", type=['xlsx'])
 
 # 2. Date input
-start_date = st.datetime_input("Select Start Date", format="DD-MM-YYYY")
-end_date = st.datetime_input("Select End Date", format="DD-MM-YYYY")
+start_date = st.date_input("Select Start Date", format="DD-MM-YYYY")
+end_date = st.date_input("Select End Date", format="DD-MM-YYYY")
 
 # 3. Execute button
 if uploaded_file and st.button("🚀 Execute"):
@@ -21,11 +21,11 @@ if uploaded_file and st.button("🚀 Execute"):
         df.iloc[:, 0] = pd.to_datetime(df.iloc[:, 0].astype(str) + ' ' + df.iloc[:, 4].astype(str))
         df.drop(df.columns[4], axis=1, inplace=True)
         max_data_date = df.iloc[:, 0].max().date()
-        end_date = min(end_date.date(), max_data_date)
+        end_date = min(end_date, max_data_date)
 
         # Step 3: Filter valid dates — only process dates where data exists
         valid_dates = []
-        for single_date in [start_date + timedelta(days=x) for x in range((end_date - start_date.date()).days + 1)]:
+        for single_date in [start_date + timedelta(days=x) for x in range((end_date - start_date).days + 1)]:
             target_datetime = datetime.combine(single_date, datetime.min.time())
 
             # Only add if any data exists on or before that datetime
