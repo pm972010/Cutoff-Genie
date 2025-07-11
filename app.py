@@ -15,7 +15,7 @@ end_date = st.date_input("Select End Date", format="DD-MM-YYYY")
 # 3. Execute button
 if uploaded_file and st.button("🚀 Execute"):
     try:
-        df = pd.read_excel('uploaded_file', skiprows=7)
+        df = pd.read_excel(uploaded_file, skiprows=7)
         df = df.iloc[:, 1:12]
         df.iloc[:, 0] = df.iloc[:, 0].ffill()
         df.iloc[:, 0] = pd.to_datetime(df.iloc[:, 0].astype(str) + ' ' + df.iloc[:, 4].astype(str))
