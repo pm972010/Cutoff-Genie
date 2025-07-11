@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime, timedelta
+from datetime.datetime import date
 from io import BytesIO
 
 st.title("📊 CUTOFF GENIE")
