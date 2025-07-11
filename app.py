@@ -21,14 +21,13 @@ if uploaded_file and st.button("🚀 Execute"):
         df.iloc[:, 0] = pd.to_datetime(df.iloc[:, 0].astype(str) + ' ' + df.iloc[:, 4].astype(str))
         df.drop(df.columns[4], axis=1, inplace=True)
         max_data_date = df.iloc[:, 0].max().date()
-        end_date = min(end_date, max_data_date)
+        end_date = min(end_date_input, max_data_date)
 
         # Step 3: Filter valid dates — only process dates where data exists
         valid_dates = []
-        for single_date in [start_date + timedelta(days=x) for x in range((end_date - start_date).days + 1)]:
+        for single_date in (start_date + timedelta(days=x) for x in range((end_date - start_date).days + 1)):
             target_datetime = datetime.combine(single_date, datetime.min.time())
-
-            # Only add if any data exists on or before that datetime
+            # Only add if data exists on or before that datetime
             if not df[df.iloc[:, 0] <= target_datetime].empty:
                 valid_dates.append(single_date)
 
@@ -38,25 +37,25 @@ if uploaded_file and st.button("🚀 Execute"):
 
         # Step 5: Iterate through valid dates and groups
         for single_date in valid_dates:
-            target_datetime = datetime.combine(single_date.date(), datetime.min.time())
+            target_datetime = datetime.combine(single_date, datetime.min.time())
 
             for group_val, group_df in df.groupby(group_col):
                 group_df = group_df.sort_values(by=df.columns[0])
                 subset = group_df[group_df.iloc[:, 0] <= target_datetime]
                 if not subset.empty:
                     row = subset.iloc[-1]
-                    if row.iloc[4]=="CL":
+                    if row.iloc[4] == "CL":
                         values = row.iloc[5:10].copy()
                     else:
                         values = row.iloc[5:10].copy()
                         values.iloc[0] = 'ATG'
 
-                    # Append to result: [Date, Group, Condition, Col6–11]
+                    # Append to result: [Date, Group, Condition, Col6–10]
                     results.append([
-                        target_datetime.date(),
-                        row.iloc[1],
-                        row.iloc[4],
-                        *values.values
+                        single_date,            # Use date directly
+                        row.iloc[1],            # Group value
+                        row.iloc[4],            # CL/OP
+                        *values.values          # Columns 6–10
                     ])
 
         # Step 6: Create final DataFrame
@@ -64,7 +63,7 @@ if uploaded_file and st.button("🚀 Execute"):
             'Date',
             df.columns[1],        # Group column
             df.columns[4],        # CL/OP
-            *df.columns[5:10]     # Columns 6 to 11
+            *df.columns[5:10]     # Columns 6 to 10
         ])
 
         # Show date only once per block
